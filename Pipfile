@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+coverage = "*"
+ddt = "*"
+pytest-cov = "*"
+moto = "*"
+
+[packages]
+zappa = "*"
+flask = "*"
+flask_restplus = "*"
+click = "*"
+
+[requires]
+python_version = "3.6"
