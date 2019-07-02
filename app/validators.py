@@ -11,7 +11,7 @@ def string_to_igsn(string):
     "Validate that a string is a valid IGSN"
     # ascii
     # case insensitive
-    return string.lower()
+    return string.toascii().lower()
 
 def string_to_registrant(string):
     "Check that a string is a valid registrant"
