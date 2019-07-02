@@ -94,7 +94,7 @@ $ pipenv run pytest
 # pytest output follows...
 ```
 
-There's a few doctests for simple functions, and then most tests live in the `tests` folder.
+There's a few doctests for simple functions, and then most tests live in the `tests` folder. You can get coverage metrics by going to `./tests/reports/coverage.html/index.html`.
 
 ### Deploy
 
