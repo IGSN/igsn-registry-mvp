@@ -1,8 +1,8 @@
-""" file:    test_api.py (tests)
-    author: Jess Robertson, jess@unearthed.solutions
-    date:    Thursday, 31 January 2019
+""" file:    test_igsn.py (tests)
+    author: Jess Robertson, jessrobertson@icloud.com
+    date:    July 2019
 
-    description: Test API factor
+    description: Test IGSN resources
 """
 
 import json
