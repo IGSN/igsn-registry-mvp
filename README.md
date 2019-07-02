@@ -37,7 +37,7 @@ All dependencies are now up-to-date!
 You can then run the test flask server using
 
 ```bash
-$  pipenv shell "export FLASK_APP=app:create_app; flask run --port 8182"  # or whatever
+$  pipenv run ./run_api.py --port 8182  # or whatever
  * Environment: production
    WARNING: Do not use the development server in a production environment.
    Use a production WSGI server instead.
@@ -48,22 +48,30 @@ $  pipenv shell "export FLASK_APP=app:create_app; flask run --port 8182"  # or w
 and start making requests (I recommend `pip instal httpie`)
 
 ```bash
-$ http :8182/igsn/foo
+$ http :8182/igsn/
+HTTP/1.0 200 OK
+Content-Length: 50
+Content-Type: application/json
+Date: Tue, 02 Jul 2019 04:05:35 GMT
+Server: Werkzeug/0.15.4 Python/3.6.8
+
+{
+    "message": "IGSN Demo Resolver up and running!"
+}
 ```
 
 or posting JSON:
 
 ```bash
-$ http --json POST :8182/score bucket="unearthed-portal-lambda-dev" submission_filename="explorer/example_submission_optimist.csv"
+$ http --json POST :8182/igsn/foo8128 url="http://example.com/path/to/igsn" registrant="jess"
 HTTP/1.0 200 OK
-Content-Length: 62
+Content-Length: 41
 Content-Type: application/json
-Date: Mon, 29 Apr 2019 03:51:03 GMT
-Server: Werkzeug/0.14.1 Python/3.6.8
+Date: Tue, 02 Jul 2019 04:06:49 GMT
+Server: Werkzeug/0.15.4 Python/3.6.8
 
 {
-    "private": 0.3440113354825938,
-    "public": 0.3440113354825938
+    "message": "Registered sample foo8128"
 }
 ```
 
