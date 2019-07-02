@@ -1,3 +1,7 @@
+# Other cruft
+.DS_Store
+tests/reports
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

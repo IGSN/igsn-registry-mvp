@@ -37,7 +37,7 @@ All dependencies are now up-to-date!
 You can then run the test flask server using
 
 ```bash
-$  pipenv shell "export FLASK_APP=api:create_app; flask run --port 8182"  # or whatever
+$  pipenv shell "export FLASK_APP=app:create_app; flask run --port 8182"  # or whatever
  * Environment: production
    WARNING: Do not use the development server in a production environment.
    Use a production WSGI server instead.

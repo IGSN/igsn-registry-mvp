@@ -9,6 +9,7 @@ coverage = "*"
 ddt = "*"
 pytest-cov = "*"
 moto = "*"
+pylint = "*"
 
 [packages]
 zappa = "*"

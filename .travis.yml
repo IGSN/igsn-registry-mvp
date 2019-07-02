@@ -2,6 +2,32 @@
 # author: Jess Robertson
 # date:   July 2019
 
+# gitlab version
+# test:
+#   image: python:3.6
+#
+#   variables:
+#     # Pipenv needs these to be set!
+#     LC_ALL: C.UTF-8
+#     LANG: C.UTF-8
+#
+#   script:
+#     # Push in dummy credentials to keep boto happy
+#     - mkdir -p ~/.aws
+#     - echo $'[default]\naws_access_key_id = f0o\naws_secret_access_key = bAr' > ~/.aws/credentials
+#
+#     # Install dependencies - use locked versions
+#     - pip install pipenv
+#     - pipenv install --ignore-pipfile --dev
+#
+#     # Run the tests
+#     - pipenv run pytest
+#
+#   artifacts:
+#     reports:
+#       junit: tests/reports/test-output.junit.xml
+
+
 language: python
 python:
     - "3.6"

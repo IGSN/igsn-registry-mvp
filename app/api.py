@@ -9,7 +9,7 @@
 from flask import Blueprint
 from flask_restplus import Api
 
-from .igsn import igsn
+from .api_namespaces import igsn
 
 blueprint = Blueprint('api', __name__)
 api = Api(
@@ -19,4 +19,6 @@ api = Api(
     description="An API for registring samples"
 )
 
-api.add_namespace(igsn)
+# api.add_namespace(providers)
+# api.add_namespace(namespace)
+api.add_namespace(igsn.namespace)
