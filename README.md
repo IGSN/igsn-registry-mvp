@@ -1,7 +1,7 @@
 # isgn-registry-mvp
 IGSN registry provider MVP: Lightweight submission verification (too lightweight - we need to replace this with a Batch workflow as it's killing us to do deploys in this way).
 
-_add badges here_
+[![Build Status](https://travis-ci.com/IGSN/igsn-registry-mvp.svg?branch=master)](https://travis-ci.com/IGSN/igsn-registry-mvp)
 
 ### Installing dependencies
 
