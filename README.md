@@ -76,6 +76,8 @@ Server: Werkzeug/0.15.4 Python/3.6.8
 }
 ```
 
+Alternatively you can fire up the Swagger endpoint HTML in your browser by going to `http://localhost:8182` which will let you fire off querties to your locally running endpoint.
+
 ### Testing and development
 
 If you're going to run the tests then you need to install all the development packages:
