@@ -32,7 +32,7 @@ def create_app(test_config=None):
     # Create & configure the app
     app = Flask(__name__)
     app.config.from_mapping(
-        SECRET_KEY='unearthed'
+        SECRET_KEY='igsn-rocks-my-world'
     )
     if test_config is None:
         app.config.from_pyfile('config.py', silent=True)
