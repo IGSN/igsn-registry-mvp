@@ -2,44 +2,29 @@
 # author: Jess Robertson
 # date:   July 2019
 
-# gitlab version
-# test:
-#   image: python:3.6
-#
-#   variables:
-#     # Pipenv needs these to be set!
-#     LC_ALL: C.UTF-8
-#     LANG: C.UTF-8
-#
-#   script:
-#     # Push in dummy credentials to keep boto happy
-#     - mkdir -p ~/.aws
-#     - echo $'[default]\naws_access_key_id = f0o\naws_secret_access_key = bAr' > ~/.aws/credentials
-#
-#     # Install dependencies - use locked versions
-#     - pip install pipenv
-#     - pipenv install --ignore-pipfile --dev
-#
-#     # Run the tests
-#     - pipenv run pytest
-#
-#   artifacts:
-#     reports:
-#       junit: tests/reports/test-output.junit.xml
-
-
 language: python
-python:
-    - "3.6"
-sudo: false
 
-# Command to install miniconda to build test environment
+python:
+  - "3.5"
+  - "3.6"
+
+env:
+  global:
+    - PIPENV_VENV_IN_PROJECT=1
+    - LC_ALL=C.UTF-8
+    - LANG=C.UTF-8
+    - PIPENV_IGNORE_VIRTUALENVS=1
+
 before_install:
-  - 
+  - pip install pipenv
 
 install:
-  - 
+  #     # Push in dummy credentials to keep boto happy
+  - mkdir -p ~/.aws
+  - echo $'[default]\naws_access_key_id = f0o\naws_secret_access_key = bAr' > ~/.aws/credentials
 
-# Command to run tests
-script:
-  - python setup.py test
+  # Install dependencies with pipenv
+  - pipenv install --ignore-pipfile --dev
+
+# command to run tests
+script: pipenv run pytest
