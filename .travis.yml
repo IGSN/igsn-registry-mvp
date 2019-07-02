@@ -1,0 +1,19 @@
+# file:   .travis.yml
+# author: Jess Robertson
+# date:   July 2019
+
+language: python
+python:
+    - "3.6"
+sudo: false
+
+# Command to install miniconda to build test environment
+before_install:
+  - 
+
+install:
+  - 
+
+# Command to run tests
+script:
+  - python setup.py test
