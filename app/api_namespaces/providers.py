@@ -4,3 +4,30 @@
 
     description: Provider resources
 """
+# pylint: disable=C0103
+
+from pathlib import Path
+import logging
+
+from flask import current_app
+from flask_restplus import Resource, Namespace, reqparse
+
+from .. import validate
+
+namespace = Namespace('providers', description='IGSN provider information', path='/providers')
+
+NAMESPACE_DATA = [
+    {
+        "name": f"provider_{l}",
+        "url": f"http://igsn.org/providers/provider_{l}"
+    } for l in '12345'
+]
+
+@namespace.route('/')
+class IGSNHealthCheck(Resource):
+
+    "Namespace list endpoint"
+
+    @namespace.doc('Get a list of the namespaces that IGSN knows about')
+    def get(self):
+        return NAMESPACE_DATA

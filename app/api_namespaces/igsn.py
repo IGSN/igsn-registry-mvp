@@ -1,4 +1,4 @@
-""" file:    resolve.py (igsn-registry-mvp)
+""" file:    resolve.py (igsn-registry-mvp.api_namespaces)
     author:  Jess Robertson, jessrobertson@icloud.com
     date:    July 2019
     description: Demo resolver for when we don't want things to hook up to handle
