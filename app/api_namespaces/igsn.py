@@ -56,7 +56,7 @@ class IGSN(Resource):
 
     def get(self, sampleNumber):
         "Resolve a sample"
-        return {'sample': sampleNumber}
+        return {'sampleNumber': sampleNumber}
 
     @namespace.expect(POST_PARSER)
     def post(self, sampleNumber):

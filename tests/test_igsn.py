@@ -41,13 +41,22 @@ class TestIGSNResource(unittest.TestCase):
         self.assertFalse(create_app().testing)
         self.assertTrue(create_app({'TESTING': True}).testing)
 
-    def test_hit_with_get(self):
+    def test_endpoint_health(self):
         "Check we can get the endpoint"
         response = self.client.get('/igsn/')
         data = get_json(response)
         self.assertTrue(data is not None)
         self.assertIn('message', data.keys())
         self.assertTrue('up and running' in data['message'])
+
+    @ddt.data('foo', 'bar', 'baz', 'quux', 'jess')
+    def test_dummy_resolver(self, igsn):
+        "Test our dummy resolver"
+        response = self.client.get(f'/igsn/{igsn}')
+        data = get_json(response)
+        self.assertTrue(data is not None)
+        self.assertIn('sampleNumber', data.keys())
+        self.assertEqual(data['sampleNumber'], igsn)
 
     def test_hit_with_post(self):
         "Check we can get the endpoint with the given method"
