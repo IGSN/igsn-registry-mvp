@@ -1,0 +1,64 @@
+{
+	"folders":
+	[
+		{
+			"name": "Project files",
+			"path": ".",
+			"folder_exclude_patterns": [
+				"jupyter", "app", "tests",
+				".pytest_cache",
+				".ipynb_checkpoints"
+			],
+			"file_exclude_patterns": [
+				"*.sublime-workspace",
+				".coverage"
+			],
+			"binary_file_patterns": [
+				"*.ipynb",
+				"Pipfile.lock"
+			]
+		},
+		{
+			"name": "API",
+			"path": "./app",
+			"folder_exclude_patterns": [
+				"__pycache__"
+			],
+			"file_exclude_patterns": [
+			]
+		},
+		{
+			"name": "Tests",
+			"path": "./tests",
+			"folder_exclude_patterns": [
+				"__pycache__",
+				"reports/coverage.html"
+			],
+			"file_exclude_patterns": [
+			],
+			"binary_file_patterns": ["*.csv"]
+		},
+		{
+			"name": "Notebooks",
+			"path": "./jupyter",
+			"folder_exclude_patterns": [
+				".pytest_cache",
+				"__pycache__",
+				".ipynb_checkpoints"
+			]
+		},
+	],
+	"settings": {
+		"tab_size": 4
+	},
+	"build_systems": [
+		{
+			"name": "Run server",
+			"shell_cmd": "pipenv run ./run_api.py --port 8182"
+		},
+		{
+			"name": "Test",
+			"shell_cmd": "pipenv run pytest"
+		}
+	]
+}
