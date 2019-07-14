@@ -16,7 +16,7 @@ from .. import validate
 
 namespace = Namespace('providers', description='IGSN provider information', path='/providers')
 
-NAMESPACE_DATA = [
+PROVIDER_DATA = [
     {
         "name": f"provider_{l}",
         "url": f"http://igsn.org/providers/provider_{l}"
@@ -24,10 +24,10 @@ NAMESPACE_DATA = [
 ]
 
 @namespace.route('/')
-class IGSNHealthCheck(Resource):
+class ProviderCollection(Resource):
 
-    "Namespace list endpoint"
+    "Provider list endpoint"
 
-    @namespace.doc('Get a list of the namespaces that IGSN knows about')
+    @namespace.doc('Get a list of the providers that IGSN knows about')
     def get(self):
-        return NAMESPACE_DATA
+        return PROVIDER_DATA

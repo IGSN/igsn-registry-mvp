@@ -8,6 +8,7 @@
 import json
 import unittest
 from itertools import product
+from pathlib import Path
 
 import ddt
 
@@ -16,6 +17,10 @@ from app import create_app
 def get_json(response):
     "Covert Werkzeug response body to JSON"
     return json.loads(response.get_data(as_text=True))
+
+RESOURCES = Path(__file__).parent / 'resources'
+with open(RESOURCES / 'test_igsn_post_samples.json', 'r') as src:
+    TEST_POST_DATA = json.load(src)
 
 @ddt.ddt
 class TestIGSNResource(unittest.TestCase):
@@ -32,8 +37,8 @@ class TestIGSNResource(unittest.TestCase):
         # Test data
         self.sampleNumber = 'foo1f32'
         self.postargs = {
-            'url': 'https://igsn.org/foo1f32',
-            'registrant': 'testing_framework'
+            'url': '',
+            'registrant': ' '
         }
 
     def test_config(self):
@@ -58,14 +63,23 @@ class TestIGSNResource(unittest.TestCase):
         self.assertIn('sampleNumber', data.keys())
         self.assertEqual(data['sampleNumber'], igsn)
 
-    def test_hit_with_post(self):
-        "Check we can get the endpoint with the given method"
+    # todo are there restrictions on what an IGSN can be? e.g. ascii
+    @ddt.data(*TEST_POST_DATA)
+    @ddt.unpack
+    def test_hit_with_post(self, igsn, url, registrant):
+        "Check we can post to the endpoint with the given method"
         # Test response
-        response = self.client.post(f'/igsn/{self.sampleNumber}', data=self.postargs)
+        postargs = {
+            'url': url,
+            'registrant': registrant
+        }
+        response = self.client.post(f'/igsn/{igsn}', data=postargs)
         data = get_json(response)
         self.assertTrue(data is not None)
         for key in ('message',):
             self.assertIn(key, data.keys())
+            self.assertIn('Registered sample', data['message'])
+            self.assertIn(igsn, data['message'])
 
     @ddt.data('url', 'registrant')
     def test_missing_argument(self, missing_arg):
