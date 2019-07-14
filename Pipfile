@@ -10,6 +10,7 @@ ddt = "*"
 pytest-cov = "*"
 moto = "*"
 pylint = "*"
+ipykernel = "*"
 
 [packages]
 zappa = "*"

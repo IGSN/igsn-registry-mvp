@@ -96,6 +96,14 @@ $ pipenv run pytest
 
 There's a few doctests for simple functions, and then most tests live in the `tests` folder. You can get coverage metrics by going to `./tests/reports/coverage.html/index.html`.
 
+If you want to build an iPython kernel for Jupyter - you can build a kernel using the pipenv using
+
+```bash
+$ pipenv run "python -m ipykernel install --user --name=igsn-registry-mvp"
+```
+
+and you should be able to see the igsn-registry-mvp kernel in jupyter.
+
 ### Deploy
 
 We just deploy with zappa. Prior to deploying you probably want to remove all the dev
