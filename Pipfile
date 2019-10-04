@@ -22,6 +22,7 @@ flask-sqlalchemy = "*"
 flask-bcrypt = "*"
 python-dotenv = "*"
 flask-migrate = "*"
+healthcheck = "*"
 
 [requires]
 python_version = "3.6"

@@ -17,7 +17,7 @@ class UserSchema(Schema):
         self_view_many = 'api.user_list'
 
     id = fields.Integer(as_string=True, dump_only=True)
-    name = fields.Str(required=True, load_only=True)
+    username = fields.Str(required=True, load_only=True)
     email = fields.Email(load_only=True)
     registered_on = fields.Date()
     display_name = fields.Function(lambda obj: "{} <{}>".format(obj.name.upper(), obj.email))

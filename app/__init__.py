@@ -9,7 +9,7 @@ import logging
 
 from flask import Flask, request, Blueprint
 from flask.logging import default_handler
-from flask_rest_jsonapi import Api
+from healthcheck import HealthCheck, EnvironmentDump
 import pytest
 
 # Add some extra info to flask logging
@@ -30,6 +30,7 @@ default_handler.setFormatter(FORMATTER)
 from .api import blueprint as api_blueprint
 from .config import config_by_name
 from .models.connections import db, crypt, migrate
+from .health import health, envdump
 
 def create_app(config=None):
     """
@@ -56,8 +57,11 @@ def create_app(config=None):
 
     # Add resources
     db.init_app(app)
+    app.config['SQLALCHEMY_DB'] = db
     crypt.init_app(app)
     migrate.init_app(app, db)
+    health.init_app(app, "/health")
+    envdump.init_app(app, "/environment")
 
     # Add a testing command
     @app.cli.command('test')
