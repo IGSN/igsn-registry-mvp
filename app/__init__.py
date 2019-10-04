@@ -7,11 +7,10 @@
 
 import logging
 
-from flask import Flask, request
+from flask import Flask, request, Blueprint
 from flask.logging import default_handler
-from flask_restplus import Api
-
-from .api import blueprint as api_blueprint
+from flask_rest_jsonapi import Api
+import pytest
 
 # Add some extra info to flask logging
 class RequestFormatter(logging.Formatter):
@@ -27,24 +26,43 @@ FORMATTER = RequestFormatter(
 )
 default_handler.setFormatter(FORMATTER)
 
-def create_app(test_config=None):
-    "Create and configure the Flask app serving our API"
+# Now that resources are created we can import models/schemas etc
+from .api import blueprint as api_blueprint
+from .config import config_by_name
+from .models.connections import db, crypt, migrate
+
+def create_app(config=None):
+    """
+    Create and configure the Flask app serving our API
+
+    Parameters:
+        config - the name of an app configuration (see config.py for these)
+            One of 'development', 'testing' or 'production'
+    """
     # Create & configure the app
     app = Flask(__name__)
-    app.config.from_mapping(
-        SECRET_KEY='igsn-rocks-my-world'
-    )
-    if test_config is None:
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        app.config.from_mapping(test_config)
+    try:
+        app.config.from_object(config_by_name[config or 'development'])
+    except KeyError:
+        raise ValueError("Config must be one of 'development' or 'production'")
 
+    # Configure logging
     app.logger.setLevel(logging.DEBUG)
     if app.config.get('DEBUG', False):
         app.logger.setLevel(logging.DEBUG)
 
     # Add the API resources
     app.register_blueprint(api_blueprint)
+
+    # Add resources
+    db.init_app(app)
+    crypt.init_app(app)
+    migrate.init_app(app, db)
+
+    # Add a testing command
+    @app.cli.command('test')
+    def test_app():
+        pytest.main(['-s', 'tests'])
 
     # Return the configured app
     return app
