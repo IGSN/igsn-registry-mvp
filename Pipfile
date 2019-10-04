@@ -18,6 +18,10 @@ flask = "*"
 # flask_restplus = "*"
 flask-rest-jsonapi = "*"
 click = "*"
+flask-sqlalchemy = "*"
+flask-bcrypt = "*"
+python-dotenv = "*"
+flask-migrate = "*"
 
 [requires]
 python_version = "3.6"
