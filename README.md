@@ -1,6 +1,6 @@
 # IGSN registry provider MVP
 
-Registring your samples with bespoke organic PIDs since July 2019
+Registering your samples with bespoke organic PIDs since July 2019
 
 [![Build Status](https://travis-ci.com/IGSN/igsn-registry-mvp.svg?branch=master)](https://travis-ci.com/IGSN/igsn-registry-mvp)
 
@@ -49,7 +49,7 @@ $  pipenv run ./run_api.py --port 8182  # or whatever
 and start making requests (I recommend `pip instal httpie`)
 
 ```bash
-$ http :8182/igsn/
+$ http :8182/health/
 HTTP/1.0 200 OK
 Content-Length: 50
 Content-Type: application/json

@@ -9,7 +9,7 @@
 from flask import Blueprint
 from flask_restplus import Api
 
-from .api_namespaces import igsn
+from .api_namespaces import providers, health, namespace
 
 blueprint = Blueprint('api', __name__)
 api = Api(
@@ -20,5 +20,6 @@ api = Api(
 )
 
 # api.add_namespace(providers)
-# api.add_namespace(namespace)
-api.add_namespace(igsn.namespace)
+api.add_namespace(namespace.namespace)
+api.add_namespace(providers.namespace)
+api.add_namespace(health.namespace)

@@ -16,7 +16,7 @@ query_parser.add_argument('name', required=False)
 
 from .. import validate
 
-namespace = Namespace('namespaces', description='IGSN registry/resolution', path='/namespaces')
+namespace = Namespace('namespace', description='IGSN registry/resolution', path='/namespace')
 
 # todo: replace with actual data
 NAMESPACE_DATA = [
@@ -34,6 +34,8 @@ class NamespaceCollection(Resource):
     @namespace.doc('Get a list of the namespaces that IGSN knows about')
     @namespace.expect(query_parser)
     def get(self):
+        args = query_parser.parse_args()
+        current_app.logger.debug(args)
         if args['name']:
             for ns in NAMESPACE_DATA:
                 if ns['name'] == args['name']:
