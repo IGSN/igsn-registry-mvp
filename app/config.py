@@ -8,7 +8,7 @@
 import os
 from pathlib import Path
 
-BASEDIR = Path(__file__).parent.resolve()
+BASEDIR = Path(__file__).parent.parent.resolve()
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'igsn-rocks-my-world')
