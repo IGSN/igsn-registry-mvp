@@ -7,7 +7,7 @@
 # pylint: disable=C0103
 
 from flask import Blueprint
-from flask_restplus import Api
+# from flask_restplus import Api
 
 from .api_namespaces import providers, health, namespace
 
@@ -16,7 +16,7 @@ api = Api(
     blueprint,
     title='IGSN Registry API MVP',
     version='1.0',
-    description="An API for registring samples"
+    description="An API for registring providers"
 )
 
 # api.add_namespace(providers)
