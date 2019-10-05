@@ -19,12 +19,22 @@ class Config:
     # Pagination options
     PAGE_SIZE = 30
 
+    @property
+    def settings(self):
+        "Convert config class to a settings dictionary"
+        return {
+            key: getattr(self, key) for key in dir(self)
+            if not key.startswith('__')
+            and key != 'settings'
+            and not callable(getattr(self, key))
+        }
+
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(BASEDIR / 'igsn_registry_dev.db')
 
 class TestingConfig(Config):
-    DEBUG = True
+    DEBUG = False
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(BASEDIR / 'igsn_registry_test.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
