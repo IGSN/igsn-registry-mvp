@@ -19,7 +19,7 @@ before_install:
   - pip install pipenv
 
 install:
-  #     # Push in dummy credentials to keep boto happy
+  # Push in dummy credentials to keep boto happy
   - mkdir -p ~/.aws
   - echo $'[default]\naws_access_key_id = f0o\naws_secret_access_key = bAr' > ~/.aws/credentials
 
@@ -27,4 +27,4 @@ install:
   - pipenv install --ignore-pipfile --dev
 
 # command to run tests
-script: pipenv run pytest
+script: pipenv run flask test

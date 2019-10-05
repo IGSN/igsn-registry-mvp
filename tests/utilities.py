@@ -69,10 +69,11 @@ class APITestCase(unittest.TestCase):
         # Check we got the right thing
         self.assertEqual(
             response.status_code, expected_status,
-            'Unexpected status code {} from request to {}, expected {}'.format(
+            'Unexpected status code {} from request to {}, expected {}.\nBody:{}'.format(
                 response.status_code,
                 endpoint,
-                expected_status))
+                expected_status,
+                response.get_data(as_text=True)))
 
         # If it's all good let's try to decode the response
         if decode:

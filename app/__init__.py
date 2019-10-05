@@ -27,10 +27,9 @@ FORMATTER = RequestFormatter(
 default_handler.setFormatter(FORMATTER)
 
 # Now that resources are created we can import models/schemas etc
-from .api import blueprint as api_blueprint
+from .blueprints import user_api, registry_api, sitemap
 from .config import config_by_name
-from .models.connections import db, crypt, migrate
-from .health import health, envdump
+from .extensions import db, crypt, migrate, health, envdump
 
 def create_app(config=None):
     """
@@ -52,9 +51,6 @@ def create_app(config=None):
     if app.config.get('DEBUG', False):
         app.logger.setLevel(logging.DEBUG)
 
-    # Add the API resources
-    app.register_blueprint(api_blueprint)
-
     # Add resources
     db.init_app(app)
     app.config['SQLALCHEMY_DB'] = db
@@ -63,6 +59,11 @@ def create_app(config=None):
     health.init_app(app, "/health")
     envdump.init_app(app, "/environment")
 
+    # Add the API resources
+    app.register_blueprint(user_api.blueprint)
+    app.register_blueprint(registry_api.blueprint)
+    app.register_blueprint(sitemap.blueprint)
+
     # Add a testing command
     @app.cli.command('test')
     def test_app():
@@ -70,11 +71,3 @@ def create_app(config=None):
 
     # Return the configured app
     return app
-
-def exception_handler(err, event, context):
-    "Exception handler needed for lambda"
-    print("ERROR {} {} {}".format(err, event, context))
-    return True
-
-if __name__ == '__main__':
-    create_app({'DEBUG': True}).run(debug=True)

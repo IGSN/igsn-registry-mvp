@@ -1,11 +1,11 @@
-""" file:    user.py (igsn-registry-mvp/models)
+""" file:    models.py (igsn-user-api)
     author:  Jess Robertson, jessrobertson@icloud.com
     date:    July 2019
 
-    description: User models for SQLAlchemy
+    description: Database models for SQLAlchemy for user blueprint
 """
 
-from .connections import db, crypt
+from ...extensions.sqlalchemy import db, crypt
 
 # Create the tables for our users in the database
 class User(db.Model):
@@ -38,7 +38,7 @@ class User(db.Model):
     def __repr__(self):
         return "<User '{}'>".format(self.username)
 
-class UserRole(db.Model):
+class Role(db.Model):
 
     "Role models for users"
 

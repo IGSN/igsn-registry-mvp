@@ -10,19 +10,17 @@ ddt = "*"
 pytest-cov = "*"
 moto = "*"
 pylint = "*"
-# ipykernel = "*"
 
 [packages]
 # zappa = "*"
 flask = "*"
-# flask_restplus = "*"
 flask-rest-jsonapi = "*"
-click = "*"
 flask-sqlalchemy = "*"
 flask-bcrypt = "*"
 python-dotenv = "*"
 flask-migrate = "*"
 healthcheck = "*"
+authlib = "*"
 
 [requires]
 python_version = "3.6"

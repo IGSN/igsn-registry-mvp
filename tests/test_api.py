@@ -1,8 +1,8 @@
-""" file:    test_igsn.py (tests)
+""" file:    test_api.py (tests)
     author: Jess Robertson, jessrobertson@icloud.com
     date:    July 2019
 
-    description: Test IGSN resources
+    description: Test base resources
 """
 
 import json
@@ -67,6 +67,13 @@ class TestBaseResources(APITestCase):
         # Check we get the right values
         for key, value in expected.items():
             self.assertEqual(value, data['config'][key])
+
+    def test_sitemap(self):
+        "Check the sitemap is available"
+        data, _ = self.request('/sitemap')
+        keys = set(k for k, _ in data)
+        for key in ('/sitemap', '/environment', '/health'):
+            self.assertIn(key, keys)
 
     # # todo are there restrictions on what an IGSN can be? e.g. ascii
     # @ddt.data(*TEST_POST_DATA)

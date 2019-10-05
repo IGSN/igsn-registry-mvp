@@ -1,8 +1,8 @@
-""" file:    health.py (api)
+""" file:    sqlalchemy.py (igsn-registry-mvp.extensions)
     author:  Jess Robertson, jessrobertson@icloud.com
     date:    July 2019
 
-    description: IGSN Registry API healtchecks
+    description: Healthcheck extensions for app
 """
 
 from pathlib import Path
