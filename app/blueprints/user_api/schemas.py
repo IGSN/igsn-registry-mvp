@@ -12,7 +12,7 @@ from marshmallow_jsonapi import fields
 class User(Schema):
     class Meta:
         type_ = 'user'
-        self_view = 'models.user.user_detail'
+        self_view = 'models.user_detail'
         self_view_kwargs = {'id': '<id>'}
         self_view_many = 'igsn_user_api.user_list'
 
@@ -28,3 +28,7 @@ class Role(Schema):
         self_view = 'models.role_detail'
         self_view_kwargs = {'id': '<id>'}
         self_view_many = 'igsn_user_api.role_list'
+
+    id = fields.Integer(as_string=True, dump_only=True)
+    name = fields.Str(required=True, load_only=True)
+    description = fields.Str(required=False)

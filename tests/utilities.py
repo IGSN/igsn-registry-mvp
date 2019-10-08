@@ -1,87 +1,120 @@
-""" file:    utilities.py (tests)
-    author:  Jess Robertson, jessrobertson@icloud.com
+""" file:    test_api.py (tests)
+    author: Jess Robertson, jessrobertson@icloud.com
     date:    July 2019
 
-    description: Common functionality for tests
+    description: Test case utility for unit tests, lifted & lightly edited from flask-testing which
+        doesn't seem to be maintained anymore. Note that we only care about the API tests here
+        as I figure you'd use something else for testing the frontend.
 """
 
-import json
+from unittest import TestCase
+import gc
+import logging
 from pathlib import Path
-import unittest
 
-from app import create_app
+from flask import json  # test with flask's JSON implementation
+import flask_migrate
+from werkzeug.utils import cached_property
+import sqlalchemy
 
-# Pointer to resources directory
-TEST_RESOURCES = Path(__file__).parent / 'resources'
+from app import create_app, db
 
-# A base class for testing JSON API reponses
-class APITestCase(unittest.TestCase):
+MIGRATION_FOLDER = Path(__file__).parent.parent.resolve() / 'migrations'
 
-    """
-    A class for testing our JSON API. Test cases should inherit from this
+## JSON Mixin class
+# Just enables a response.json attribute similar to requests.Response.json
+class JSONResponseMixin(object):
+    "Enables a JSON object on a Werkzeug reponse"
 
-    Creates a `self.app` and `self.client` objects to manage the app instance and a client
-    session for makinng requests.
+    @cached_property
+    def json(self):
+        "Check and load JSON"
+        try:
+            return json.loads(self.data)
+        except json.JSONDecodeError as err:
+            raise ValueError(f'Recieved malformed JSON. Error was {str(err)}')
 
-    You should be able to do things like
+def add_json_property(response_class):
+    "Add our JSON attribute to whatever response class we started with"
+    class TestResponse(response_class, JSONResponseMixin):
+        pass
 
-    ```python
-    response = self.request('/health')
-    ```
+    return TestResponse
 
-    and have the JSON automatically decoded.
-    """
+class APITestCase(TestCase):
+
+    environment = 'testing'  # don't set this to development or production unless you
+                             # want to b0rk your database since we clean things out
+
+    ## Setup and teardown hooks
+    @classmethod
+    def setUpClass(cls):
+        # Migrate database
+        app = create_app(cls.environment)
+        with app.app_context():
+            logging.debug('Running database migration')
+            flask_migrate.upgrade()
+
+    @classmethod
+    def tearDownClass(cls):
+        db.drop_all()
+        db.engine.execute("DROP TABLE alembic_version")
 
     def setUp(self):
-        self.app = create_app('testing')
+        # Construct app instance and client
+        self.app = create_app(self.environment)
+        self.orig_response = self.app.response_class
+        self.app.response_class = add_json_property(self.app.response_class)
+
+        # Create a client
         self.client = self.app.test_client()
 
-    def request(self, endpoint, method='get', expected_status=200, decode=True, *args, **kwargs):
+    def tearDown(self):
+        # Clean out database data from the session
+        logging.debug('Removing test data')
+        for table in reversed(db.metadata.sorted_tables):
+            db.engine.execute(table.delete())
+        db.session.commmit()
+        db.session.remove()
+
+    def request(self, endpoint, method='get', status=200, *args, **kwargs):
         """
-        Method for making requests against the API.
-
-        Does a bunch of conversions and tests to ease ergonomics:
-          - Check the return status is correct
-          - Check we actually JSON in the response body
-          - Covert Werkzeug response body to JSON.
-
-        ..and then returns the JSON for further testing
-
-        Parameters:
-            method - the HTTP method to use (get, post, put, patch, delete)
-            endpoint - the relative endpoint in the API to request from
-            expected_status - the expected status. Optional, defaults to 200
-            decode - if True, attempt to decode the JSON into a Python object. Optional,
-                defaults to True. You probably want to set this to False if you're expecting
-                a 4XX or similar.
-            *args, **kwargs - get passed to underlying request call
-
-        Returns:
-            data, response - returns the JSON and the response class. If `decode=False` then
-                the json object will be None.
+        Make a request against the API endpoint, just does some added status checking
         """
-        # Make request
+        # Actually make request
         try:
             response = getattr(self.client, method)(endpoint, *args, **kwargs)
         except AttributeError:
-            self.fail("Unknown API method {}".format(method))
+            self.fail(f'Unknown API method {method}')
 
-        # Check we got the right thing
-        self.assertEqual(
-            response.status_code, expected_status,
-            'Unexpected status code {} from request to {}, expected {}.\nBody:{}'.format(
-                response.status_code,
-                endpoint,
-                expected_status,
-                response.get_data(as_text=True)))
+        # Check this went through ok
+        self.assertStatus(response, status)
+        return response
 
-        # If it's all good let's try to decode the response
-        if decode:
-            try:
-                data = json.loads(response.get_data(as_text=True))
-            except json.JSONDecodeError as err:
-                self.fail('Recieved malformed JSON. Error was {}'.format(str(err)))
-        else:
-            data = None
+    # Broken out methods - todo add some common checks for each (e.g. is put/patch data updated?)
+    def get(self, endpoint, status=200, *args, **kwargs):
+        return self.request(endpoint, 'get', status, *args, **kwargs)
 
-        return data, response
+    def post(self, endpoint, status=200, *args, **kwargs):
+        return self.request(endpoint, 'post', status, *args, **kwargs)
+
+    def put(self, endpoint, status=200, *args, **kwargs):
+        return self.request(endpoint, 'put', status, *args, **kwargs)
+
+    def patch(self, endpoint, status=200, *args, **kwargs):
+        return self.request(endpoint, 'patch', status, *args, **kwargs)
+
+    def delete(self, endpoint, status=200, *args, **kwargs):
+        return self.request(endpoint, 'delete', status, *args, **kwargs)
+
+    def assertStatus(self, response, code, message=None):
+        """
+        Checks that a response status code is a given value
+
+        Parameters:
+            response - a Flask response
+            code - the expected response status code (e.g. 200)
+            message - the message to display on test failure
+        """
+        msg = message or f'Expected HTTP status {code} but got {response.status_code}'
+        self.assertEqual(response.status_code, code, msg)

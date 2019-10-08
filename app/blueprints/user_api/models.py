@@ -42,7 +42,11 @@ class Role(db.Model):
 
     "Role models for users"
 
-    __tablename__ = "user_role"
+    __tablename__ = "role"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), unique=True)
+    description = db.Column(db.String(200), nullable=True)
+
+    def __repr__(self):
+        return "<Role '{}'>".format(self.name)

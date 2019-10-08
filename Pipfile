@@ -10,6 +10,9 @@ ddt = "*"
 pytest-cov = "*"
 moto = "*"
 pylint = "*"
+flask-testing = "*"
+factory-boy = "*"
+ipykernel = "*"
 
 [packages]
 # zappa = "*"
@@ -21,6 +24,7 @@ python-dotenv = "*"
 flask-migrate = "*"
 healthcheck = "*"
 authlib = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.6"

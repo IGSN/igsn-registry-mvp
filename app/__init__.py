@@ -59,6 +59,11 @@ def create_app(config=None):
     health.init_app(app, "/health")
     envdump.init_app(app, "/environment")
 
+    # Create tables if they do not exist already
+    @app.before_first_request
+    def create_tables():
+        db.create_all()
+
     # Add the API resources
     app.register_blueprint(user_api.blueprint)
     app.register_blueprint(registry_api.blueprint)

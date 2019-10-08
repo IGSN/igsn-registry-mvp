@@ -9,7 +9,7 @@
 from flask import Blueprint
 from flask_rest_jsonapi import Api
 
-from .resources import UserList, UserDetail
+from .resources import UserList, UserDetail, RoleList, RoleDetail
 from .models import *
 
 blueprint = Blueprint('igsn_user_api', __name__)
@@ -18,3 +18,5 @@ api = Api(blueprint=blueprint)
 # Users
 api.route(UserList, 'user_list', '/users')
 api.route(UserDetail, 'user_detail', '/users/<int:id>')
+api.route(RoleList, 'role_list', '/roles')
+api.route(RoleDetail, 'role_detail', '/roles/<int:id>')
