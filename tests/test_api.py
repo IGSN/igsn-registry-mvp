@@ -24,54 +24,46 @@ def test_blank_endpoint_fails(client):
     response = client.get('/')
     assert response.status_code == 404
 
-# @ddt.ddt
-# class TestBaseResources(APITestCase):
+def test_health_endpoint(client):
+    "Check that the service is healthy"
+    response = client.get('/health')
+    assert response.status_code == 200
+    assert response.json['status'] == 'success'
+    assert len(response.json['results']) > 0
 
-#     "Testing for API with mocked calls"
+@pytest.mark.parametrize('component', ['application', 'config', 'os', 'python'])
+def test_environment_endpoint_required_components(client, component):
+    "Check the environment endpoint has required components"
+    response = client.get('/environment')
+    assert response.status_code == 200
+    assert component in response.json.keys()
 
-#     def test_config(self):
-#         "Check config works ok"
-#         expected = TestingConfig().settings
-#         for key, value in expected.items():
-#             self.assertEqual(value, self.app.config[key])
+@pytest.mark.parametrize('component', ['process', 'system'])
+def test_environment_hidden_components(client, component):
+    "Check the environment endpoint has hidden certain components"
+    response = client.get('/environment')
+    assert response.status_code == 200
+    assert component not in response.json.keys()
 
+def test_environment_check_config(client):
+    "Check the config values are reported correctly"
+    response = client.get('/environment')
+    assert response.status_code == 200
 
+    # We need to ensure that any secret values are replaced by asterisks
+    config = TestingConfig()
+    censor = lambda key, value: \
+        '********' if any(s in key for s in ("KEY", "SECRET", "PASS")) else value
+    expected = {k: censor(k, v) for k, v in config.settings.items()}
 
-#     def test_health_endpoint(self):
-#         "Check that the service is healthy"
-#         response = self.request('/health')
-#         self.assertEqual(response.json['status'], 'success')
-#         self.assertTrue(len(response.json['results']) > 0)
+    # Check we get the right values
+    for key, value in expected.items():
+        assert value == response.json['config'][key]
 
-#     @ddt.data('application', 'config', 'os', 'python')
-#     def test_environment_endpoint_required_components(self, component):
-#         "Check the environment endpoint has required components"
-#         response = self.request('/environment')
-#         self.assertIn(component, response.json.keys())
-
-#     @ddt.data('process', 'system')
-#     def test_environment_hidden_components(self, component):
-#         "Check the environment endpoint has hidden certain components"
-#         response = self.request('/environment')
-#         self.assertNotIn(component, response.json.keys())
-
-#     def test_environment_check_config(self):
-#         "Check the config values are reported correctly"
-#         response = self.request('/environment')
-
-#         # We need to ensure that any secret values are replaced by asterisks
-#         config = TestingConfig()
-#         censor = lambda key, value: \
-#             '********' if any(s in key for s in ("KEY", "SECRET", "PASS")) else value
-#         expected = {k: censor(k, v) for k, v in config.settings.items()}
-
-#         # Check we get the right values
-#         for key, value in expected.items():
-#             self.assertEqual(value, response.json['config'][key])
-
-#     def test_sitemap(self):
-#         "Check the sitemap is available"
-#         response = self.request('/sitemap')
-#         keys = set(k for k, _ in response.json)
-#         for key in ('/sitemap', '/environment', '/health'):
-#             self.assertIn(key, keys)
+def test_sitemap(client):
+    "Check the sitemap is available"
+    response = client.get('/sitemap')
+    assert response.status_code == 200
+    keys = set(k for k, _ in response.json)
+    for key in ('/sitemap', '/environment', '/health'):
+        assert key in keys
