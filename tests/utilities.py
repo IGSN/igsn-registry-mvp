@@ -17,7 +17,8 @@ import flask_migrate
 from werkzeug.utils import cached_property
 import sqlalchemy
 
-from app import create_app, db
+from app.factory import create_app
+from app.extensions.sqlalchemy import db
 
 MIGRATION_FOLDER = Path(__file__).parent.parent.resolve() / 'migrations'
 
@@ -49,24 +50,29 @@ class APITestCase(TestCase):
     ## Setup and teardown hooks
     @classmethod
     def setUpClass(cls):
+        # Construct wrapped app instance
+        cls.app = create_app(cls.environment)
+        cls.orig_response = cls.app.response_class
+        cls.app.response_class = add_json_property(cls.app.response_class)
+
+        # Push app context
+        cls.app.app_context().push()
+
         # Migrate database
-        app = create_app(cls.environment)
-        with app.app_context():
-            logging.debug('Running database migration')
-            flask_migrate.upgrade()
+        logging.debug('Running database migration')
+        flask_migrate.upgrade()
+        db.create_all()
 
     @classmethod
     def tearDownClass(cls):
+        # Clean up tables
         db.drop_all()
         db.engine.execute("DROP TABLE alembic_version")
 
-    def setUp(self):
-        # Construct app instance and client
-        self.app = create_app(self.environment)
-        self.orig_response = self.app.response_class
-        self.app.response_class = add_json_property(self.app.response_class)
+        # Tear down app context
+        cls.app.app_context().pop()
 
-        # Create a client
+    def setUp(self):
         self.client = self.app.test_client()
 
     def tearDown(self):
@@ -75,7 +81,6 @@ class APITestCase(TestCase):
         for table in reversed(db.metadata.sorted_tables):
             db.engine.execute(table.delete())
         db.session.commmit()
-        db.session.remove()
 
     def request(self, endpoint, method='get', status=200, *args, **kwargs):
         """

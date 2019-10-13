@@ -6,7 +6,6 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 coverage = "*"
-ddt = "*"
 pytest-cov = "*"
 moto = "*"
 pylint = "*"
@@ -25,6 +24,7 @@ flask-migrate = "*"
 healthcheck = "*"
 authlib = "*"
 psycopg2-binary = "*"
+pendulum = "*"
 
 [requires]
 python_version = "3.6"
