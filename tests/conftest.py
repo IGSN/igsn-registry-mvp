@@ -12,6 +12,7 @@ import logging
 import pytest
 import flask_migrate
 from werkzeug.utils import cached_property
+import sqlalchemy
 
 from app.factory import create_app
 from app.extensions.sqlalchemy import db as _db
@@ -57,7 +58,7 @@ def app(request):
     ctx.pop()
 
 @pytest.fixture(scope='session')
-def client(app, request):
+def client(app, db, request):
     "Add an app client"
     return app.test_client()
 
@@ -78,11 +79,12 @@ def db(app, request):
 
     # Unload tables on fixture teardown
     finally:
+        # ensure that all sessions have closed or the connection will hang!
+        sqlalchemy.orm.session.close_all_sessions()
+
+        # Clear out database
+        _db.reflect()
         _db.drop_all()
-        try:
-            _db.engine.execute('DROP TABLE alembic_version')
-        except:
-            pass
 
 ## SESSION FIXTURE
 @pytest.yield_fixture(scope='function')
