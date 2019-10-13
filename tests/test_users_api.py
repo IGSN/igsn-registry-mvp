@@ -94,30 +94,3 @@ def test_users_simple_filter(client, users):
         response = client.get(f'/users?filter[username]={user.username}')
         assert response.status_code == 200
         assert response.json['data'][0]['links']['self'] == f'/users/{user.id}'
-
-# def test_role_list(client, roles):
-    # pass
-
-# from .utilities import APITestCase
-
-# @ddt.ddt
-# class TestBaseResources(APITestCase):
-
-#     @ddt.data(*range(5))
-#     def test_users_by_id(self, ident):
-#         "Check we can get a user by ID"
-#         response = self.request(f'/users/{ident}')
-#         self.assertIsNone(response.json['data'])
-
-#     def test_role_list(self):
-#         "Check we can hit the roles endpoint"
-#         response = self.request('/roles')
-#         self.assertEqual(response.json['meta']['count'], 0)
-#         self.assertEqual(response.json['data'], [])
-
-#     @ddt.data(*range(5))
-#     def test_roles_by_id(self, ident):
-#         "Check we can get a role by ID"
-#         print(f'/roles/{ident}')
-#         response = self.request(f'/roles/{ident}')
-#         self.assertIsNone(response.json['data'])
