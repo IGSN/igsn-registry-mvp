@@ -12,20 +12,20 @@ from marshmallow_jsonapi import fields
 class User(Schema):
     class Meta:
         type_ = 'user'
-        self_view = 'models.user_detail'
+        self_view = 'igsn_user_api.user_detail'
         self_view_kwargs = {'id': '<id>'}
         self_view_many = 'igsn_user_api.user_list'
 
     id = fields.Integer(as_string=True, dump_only=True)
-    username = fields.Str(required=True, load_only=True)
-    email = fields.Email(load_only=True)
+    username = fields.Str(required=True)
+    email = fields.Email()
     registered_on = fields.Date()
     display_name = fields.Function(lambda obj: "{} <{}>".format(obj.name.upper(), obj.email))
 
 class Role(Schema):
     class Meta:
         type_ = 'role'
-        self_view = 'models.role_detail'
+        self_view = 'igsn_user_api.role_detail'
         self_view_kwargs = {'id': '<id>'}
         self_view_many = 'igsn_user_api.role_list'
 

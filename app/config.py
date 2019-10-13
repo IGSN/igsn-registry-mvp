@@ -8,14 +8,12 @@
 import os
 from pathlib import Path
 
-DEFAULT_DB_ENGINE = 'sqlite'
-
-def generate_db_uri(host, name, port=None, user=None):
+def generate_db_uri(host, name, port=None, user=None, engine=None):
     "Dynamically load a SQLAlchemy URI generated from other options"
     try:
-        db_engine = os.environ['FLASK_DB_ENGINE']
-    except KeyError:  # fall back to default
-        db_engine = DEFAULT_DB_ENGINE
+        db_engine = engine or os.environ['FLASK_DB_ENGINE']
+    except KeyError:  # fall back to SQLite as default
+        db_engine = 'sqlite'
 
     # Load up database string
     if db_engine in {'postgresql', 'postgres'}:
@@ -58,28 +56,31 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = generate_db_uri(
-        user=os.environ['FLASK_LOCAL_DB_USER'],
-        host=os.environ['FLASK_LOCAL_DB_HOST'],
-        port=os.environ['FLASK_LOCAL_DB_PORT'],
-        name=os.environ['FLASK_LOCAL_DB_NAME_DEV']
+        engine=os.environ.get('FLASK_DEV_DB_ENGINE', None),
+        user=os.environ.get('FLASK_DEV_DB_USER', None),
+        host=os.environ.get('FLASK_DEV_DB_HOST', None),
+        port=os.environ.get('FLASK_DEV_DB_PORT', None),
+        name=os.environ.get('FLASK_DEV_DB_NAME', None)
     )
 
 class TestingConfig(Config):
     DEBUG = False
     TESTING = True
     SQLALCHEMY_DATABASE_URI = generate_db_uri(
-        user=os.environ['FLASK_LOCAL_DB_USER'],
-        host=os.environ['FLASK_LOCAL_DB_HOST'],
-        port=os.environ['FLASK_LOCAL_DB_PORT'],
-        name=os.environ['FLASK_LOCAL_DB_NAME_TEST']
+        engine=os.environ.get('FLASK_TEST_DB_ENGINE', None),
+        user=os.environ.get('FLASK_TEST_DB_USER', None),
+        host=os.environ.get('FLASK_TEST_DB_HOST', None),
+        port=os.environ.get('FLASK_TEST_DB_PORT', None),
+        name=os.environ.get('FLASK_TEST_DB_NAME', None)
     )
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = generate_db_uri(
-        user=os.environ['FLASK_DB_USER'],
-        host=os.environ['FLASK_DB_HOST'],
-        port=os.environ['FLASK_DB_PORT'],
-        name=os.environ['FLASK_DB_NAME']
+        engine=os.environ.get('FLASK_DB_ENGINE', None),
+        user=os.environ.get('FLASK_DB_USER', None),
+        host=os.environ.get('FLASK_DB_HOST', None),
+        port=os.environ.get('FLASK_DB_PORT', None),
+        name=os.environ.get('FLASK_DB_NAME', None)
     )
 
 config_by_name = {
