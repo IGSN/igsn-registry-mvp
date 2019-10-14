@@ -5,7 +5,7 @@
     description: JSON API resources for IGSN user blueprint
 """
 
-from flask_rest_jsonapi import ResourceList, ResourceDetail
+from flask_rest_jsonapi import ResourceList, ResourceRelationship, ResourceDetail
 from flask_rest_jsonapi.exceptions import ObjectNotFound
 from sqlalchemy.orm.exc import NoResultFound
 

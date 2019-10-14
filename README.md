@@ -1,6 +1,6 @@
 # IGSN registry provider MVP
 
-Registring your samples with bespoke organic PIDs since July 2019
+Registering your samples with bespoke organic PIDs since July 2019
 
 [![Build Status](https://travis-ci.com/IGSN/igsn-registry-mvp.svg?branch=master)](https://travis-ci.com/IGSN/igsn-registry-mvp)
 
@@ -35,29 +35,54 @@ Alternatively, run a command inside the virtualenv with pipenv run.
 All dependencies are now up-to-date!
 ```
 
+You can drop into a shell in the pipenv environment using `pipenv shell`. You'll need to do this to run all of the following commands. To make things easier to follow we'll prefix all commands inside the pipenv shell with the `>` symbol
+
+You first need to create and update the database using the flask migrate commands:
+
+```bash
+$ pipenv shell
+> flask db upgrade
+flask db upgrade
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 0ab4a25dfb6e, Initial migration
+```
+
 You can then run the test flask server using
 
 ```bash
-$  pipenv run ./run_api.py --port 8182  # or whatever
- * Environment: production
-   WARNING: Do not use the development server in a production environment.
-   Use a production WSGI server instead.
- * Debug mode: off
+> flask run
+Loading .env environment variables…
+ * Serving Flask app "app:create_app" (lazy loading)
+ * Environment: development
+ * Debug mode: on
  * Running on http://127.0.0.1:8182/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 393-443-831
 ```
 
-and start making requests (I recommend `pip instal httpie`)
+If you want to modify the parameters for the test server, take a look at the `.env` file in the root directory. Once your server is running you can start making requests (I recommend `pip instal httpie`)
 
 ```bash
-$ http :8182/igsn/
+$ http :8182/users
 HTTP/1.0 200 OK
-Content-Length: 50
-Content-Type: application/json
-Date: Tue, 02 Jul 2019 04:05:35 GMT
-Server: Werkzeug/0.15.4 Python/3.6.8
+Content-Length: 115
+Content-Type: application/vnd.api+json
+Date: Fri, 04 Oct 2019 09:52:51 GMT
+Server: Werkzeug/0.16.0 Python/3.6.8
 
 {
-    "message": "IGSN Demo Resolver up and running!"
+    "data": [],
+    "jsonapi": {
+        "version": "1.0"
+    },
+    "links": {
+        "self": "http://localhost:8182/users"
+    },
+    "meta": {
+        "count": 0
+    }
 }
 ```
 
@@ -99,10 +124,12 @@ There's a few doctests for simple functions, and then most tests live in the `te
 If you want to build an iPython kernel for Jupyter - you can build a kernel using the pipenv using
 
 ```bash
-$ pipenv run "python -m ipykernel install --user --name=igsn-registry-mvp"
+$ pipenv install --dev ipykernel
+$ pipenv shell
+> python -m ipykernel install --user --name=igsn-registry"
 ```
 
-and you should be able to see the igsn-registry-mvp kernel in jupyter.
+and you should be able to see the igsn-registry kernel in jupyter.
 
 ### Deploy
 
