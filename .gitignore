@@ -3,6 +3,9 @@
 tests/reports
 *.sublime-workspace
 
+# Ignore all dev SQLite databases
+igsn_registry*.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

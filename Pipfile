@@ -6,17 +6,25 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 coverage = "*"
-ddt = "*"
 pytest-cov = "*"
 moto = "*"
 pylint = "*"
-ipykernel = "*"
+flask-testing = "*"
+factory-boy = "*"
 
 [packages]
-zappa = "*"
+# zappa = "*"
 flask = "*"
-flask_restplus = "*"
-click = "*"
+flask-rest-jsonapi = "*"
+flask-sqlalchemy = "*"
+flask-bcrypt = "*"
+ecdsa = ">=0.13.3"
+python-dotenv = "*"
+flask-migrate = "*"
+healthcheck = "*"
+authlib = "*"
+psycopg2-binary = "*"
+pendulum = "*"
 
 [requires]
 python_version = "3.6"
