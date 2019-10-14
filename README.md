@@ -124,6 +124,7 @@ There's a few doctests for simple functions, and then most tests live in the `te
 If you want to build an iPython kernel for Jupyter - you can build a kernel using the pipenv using
 
 ```bash
+$ pipenv install --dev ipykernel
 $ pipenv shell
 > python -m ipykernel install --user --name=igsn-registry"
 ```
