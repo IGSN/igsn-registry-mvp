@@ -5,11 +5,9 @@
     description: Healthcheck extensions for app
 """
 
-from pathlib import Path
-
 from healthcheck import HealthCheck, EnvironmentDump
-from flask import g, current_app
-from sqlalchemy.orm import scoped_session, sessionmaker
+from flask import current_app
+from sqlalchemy.orm import scoped_session
 
 # Configure health checks
 def sqlalchemy_available():

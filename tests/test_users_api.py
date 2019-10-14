@@ -9,7 +9,6 @@ import pytest
 import factory
 from factory.alchemy import SQLAlchemyModelFactory as Factory
 
-from app.factory import create_app
 from app.blueprints.user_api import models
 
 # FactoryBoy factories for users
