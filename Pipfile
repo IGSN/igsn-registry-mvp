@@ -23,8 +23,8 @@ python-dotenv = "*"
 flask-migrate = "*"
 healthcheck = "*"
 authlib = "*"
-psycopg2-binary = "*"
 pendulum = "*"
+psycopg2-binary = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"
