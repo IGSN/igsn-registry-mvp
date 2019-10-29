@@ -19,11 +19,11 @@ class User(db.Model):
     __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(255), unique=True, nullable=False)
+    email = db.Column(db.Unicode(255), unique=True, nullable=False)
     registered_on = db.Column(db.DateTime, default=pendulum.now)
     admin = db.Column(db.Boolean, nullable=False, default=False)
-    public_id = db.Column(db.String(100), unique=True)
-    username = db.Column(db.String(50), unique=True)
+    public_id = db.Column(db.Unicode(255), unique=True)
+    username = db.Column(db.Unicode(255), unique=True)
     password_hash = db.Column(db.String(100))
     roles = db.relationship('role', backref=db.backref('roles'))
 
@@ -48,8 +48,8 @@ class Role(db.Model):
     __tablename__ = "role"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(50), unique=True)
-    description = db.Column(db.String(200), nullable=True)
+    name = db.Column(db.Unicode(255), unique=True)
+    description = db.Column(db.Unicode(2047), nullable=True)
 
     def __repr__(self):
         return "<Role '{}'>".format(self.name)

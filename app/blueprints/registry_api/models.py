@@ -17,8 +17,8 @@ class Agent(db.Model):
     __tablename__ = "agent"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    technical_contact = db.relationship('user', backref=db.backref('technical_contact_for_agent'), nullable=True)
-    primary_contact = db.relationship('user', backref=db.backref('primary_contact_for_agent'), nullable=False)
+    technical_contact = db.relationship('user')
+    primary_contact = db.relationship('user')
     public_id = db.Column(db.String(255), unique=True, nullable=False)
     namespaces = db.relationship('namespace', backref=db.backref('owner'))
     sitemaps = db.relationship('sitemap', backref=db.backref('owner'))
@@ -50,7 +50,7 @@ class Sitemap(db.Model):
     """
 
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.Strin, nullable=False)
+    url = db.Column(db.Unicode(1023), nullable=False)
     owner = db.relationship('agent', backref=db.backref('sitemaps'))
     namespaces = db.relationship("namespace")
     registered_on = db.Column(db.DateTime, default=pendulum.now)
