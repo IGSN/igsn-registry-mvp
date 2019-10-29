@@ -60,7 +60,7 @@ class DevelopmentConfig(Config):
         user=os.environ.get('FLASK_DEV_DB_USER', None),
         host=os.environ.get('FLASK_DEV_DB_HOST', None),
         port=os.environ.get('FLASK_DEV_DB_PORT', None),
-        name=os.environ.get('FLASK_DEV_DB_NAME', None)
+        name=os.environ.get('FLASK_DEV_DB_NAME', 'igsn-registry-mvp-dev')
     )
 
 class TestingConfig(Config):
@@ -71,7 +71,7 @@ class TestingConfig(Config):
         user=os.environ.get('FLASK_TEST_DB_USER', None),
         host=os.environ.get('FLASK_TEST_DB_HOST', None),
         port=os.environ.get('FLASK_TEST_DB_PORT', None),
-        name=os.environ.get('FLASK_TEST_DB_NAME', None)
+        name=os.environ.get('FLASK_TEST_DB_NAME', 'igsn-registry-mvp-test')
     )
 
 class ProductionConfig(Config):
