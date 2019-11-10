@@ -13,7 +13,6 @@ flask-testing = "*"
 factory-boy = "*"
 
 [packages]
-# zappa = "*"
 flask = "*"
 flask-rest-jsonapi = "*"
 flask-sqlalchemy = "*"
@@ -24,7 +23,8 @@ flask-migrate = "*"
 healthcheck = "*"
 authlib = "*"
 pendulum = "*"
-psycopg2-binary = "*"
+psycopg2-binary = {version = "*", sys_platform = "!= 'win32'"}  # include for Postgres connectivity
+
 
 [requires]
 python_version = "3.8"

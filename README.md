@@ -35,6 +35,8 @@ Alternatively, run a command inside the virtualenv with pipenv run.
 All dependencies are now up-to-date!
 ```
 
+I've had some issues with pipenv dropping into `cmd.exe` on Windows rather than executing in Powershell - generally this manifests itself as missing linker variables for psycopg2. A workaround is just to use the system pip to do the installs - you can specify this with `pipenv install --system`. If you're still having issues check that you've added the Postgres libraries to your path - if you've used the standard Windows install these should be somewhere like `C:\Program Files\PostgreSQL\$version\{bin,lib,include}`
+
 You can drop into a shell in the pipenv environment using `pipenv shell`. You'll need to do this to run all of the following commands. To make things easier to follow we'll prefix all commands inside the pipenv shell with the `>` symbol
 
 You first need to create and update the database using the flask migrate commands:
@@ -104,6 +106,28 @@ Server: Werkzeug/0.15.4 Python/3.6.8
 Alternatively you can fire up the Swagger endpoint HTML in your browser by going to `http://localhost:8182` which will let you fire off querties to your locally running endpoint.
 
 ### Testing and development
+
+For testing you'll need to make sure that you have a database set up for test and development purposes. We recommend that these are two seperate databases as the tests will overwrite existing data in the tables as part of the test fixture setup. Generally you need to execute something in your database like 
+
+```sql
+CREATE DATABASE igsn-registry-mvp-dev;
+CREATE DATABASE igsn-registry-mvp-test;
+```
+
+We're using `flask-migrate` to manage database migrations, to create the latest schemas in the development databse you can just do 
+
+```bash
+$ pipenv run flask db upgrade
+# snip alembic output
+```
+
+The test suite blows away and recreates the latest schemas every time it runs so you don't need to worry about this.
+
+You can set the database configuration for dev/test by changing the relevant environment variables in a `.env` file in the base of the project. These variables take the form `$FLASK_{$env}_DB_{$param}`, where `$env` is 'DEV' or 'TEST', and `$param` is one of:
+- `ENGINE` sets the database engine - so you can do something like `postgres`, `sqlite`, `mysql`, `sqlserver` etc - any SQLAlchemy engine type is accepted
+- `HOST` sets the host IP address (defaults to localhost)
+- `PORT` sets the port (defaults to 5432 - guess which database we use most often!)
+- `NAME` sets the database name (e.g. `igsn-registry-mvp-dev` or `igsn-registry-mvp-test`)
 
 If you're going to run the tests then you need to install all the development packages:
 
