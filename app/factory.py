@@ -15,6 +15,7 @@ import pytest
 from .blueprints import user_api, registry_api, sitemap
 from .config import config_by_name
 from .extensions import db, crypt, migrate, health, envdump
+from .errors import page_not_found, forbidden, server_error
 
 # Add some extra info to flask logging
 class RequestFormatter(logging.Formatter):
@@ -63,6 +64,11 @@ def create_app(config=None):
     app.register_blueprint(user_api.blueprint)
     app.register_blueprint(registry_api.blueprint)
     app.register_blueprint(sitemap.blueprint)
+
+    # Add error handlers
+    app.register_error_handler(404, page_not_found)
+    app.register_error_handler(403, forbidden)
+    app.register_error_handler(500, server_error)
 
     # Add a testing command
     @app.cli.command('test')
