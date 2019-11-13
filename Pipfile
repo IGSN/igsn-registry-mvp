@@ -25,6 +25,5 @@ authlib = "*"
 pendulum = "*"
 psycopg2-binary = {version = "*", sys_platform = "!= 'win32'"}  # include for Postgres connectivity
 
-
 [requires]
 python_version = "3.8"

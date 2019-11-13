@@ -25,7 +25,7 @@ class User(db.Model):
     public_id = db.Column(db.Unicode(255), unique=True)
     username = db.Column(db.Unicode(255), unique=True)
     password_hash = db.Column(db.String(100))
-    roles = db.relationship('role', backref=db.backref('roles'))
+    # roles = db.relationship('role', backref=db.backref('roles'))
 
     @property
     def password(self):

@@ -11,6 +11,13 @@ from factory.alchemy import SQLAlchemyModelFactory as Factory
 
 from app.blueprints.user_api import models
 
+class RoleFactory(Factory):
+    class Meta:
+        model = models.Role
+
+    name = 'admin'
+    description = 'an Admin role'
+
 # FactoryBoy factories for users
 class AdminFactory(Factory):
     class Meta:
