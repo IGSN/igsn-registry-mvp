@@ -2,6 +2,7 @@
 .DS_Store
 tests/reports
 *.sublime-workspace
+.vscode/*
 
 # Ignore all dev SQLite databases
 igsn-registry*.db
