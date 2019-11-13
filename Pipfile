@@ -16,14 +16,13 @@ factory-boy = "*"
 flask = "*"
 flask-rest-jsonapi = "*"
 flask-sqlalchemy = "*"
-flask-bcrypt = "*"
-ecdsa = ">=0.13.3"
 python-dotenv = "*"
 flask-migrate = "*"
 healthcheck = "*"
 authlib = "*"
 pendulum = "*"
+pywin32 = {version = "!= 226", sys_platform = "== 'win32'"}  # work around broken pywin version 226
 psycopg2-binary = {version = "*", sys_platform = "!= 'win32'"}  # include for Postgres connectivity
 
 [requires]
-python_version = "3.8"
+python_version = "3.6"

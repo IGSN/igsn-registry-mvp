@@ -17,7 +17,7 @@ class User(Schema):
         self_view_many = 'igsn_user_api.user_list'
 
     id = fields.Integer(as_string=True, dump_only=True)
-    username = fields.Str(required=True)
+    name = fields.Str(required=True)
     email = fields.Email()
     registered_on = fields.Date()
     display_name = fields.Function(lambda obj: "{} <{}>".format(obj.name.upper(), obj.email))

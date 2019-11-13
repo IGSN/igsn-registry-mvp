@@ -14,7 +14,7 @@ import pytest
 # Now that resources are created we can import models/schemas etc
 from .blueprints import user_api, registry_api, sitemap
 from .config import config_by_name
-from .extensions import db, crypt, migrate, health, envdump
+from .extensions import db, migrate, health, envdump
 from .errors import page_not_found, forbidden, server_error
 
 # Add some extra info to flask logging
@@ -48,21 +48,20 @@ def create_app(config=None):
         raise ValueError("Config must be one of 'development' or 'production'")
 
     # Configure logging
-    app.logger.setLevel(logging.DEBUG)
+    app.logger.setLevel(logging.DEBUG)  # pylint: disable=E1101
     if app.config.get('DEBUG', False):
-        app.logger.setLevel(logging.INFO)
-
+        app.logger.setLevel(logging.INFO)  # pylint: disable=E1101 
+    
     # Add resources
     db.init_app(app)
     app.config['SQLALCHEMY_DB'] = db
-    crypt.init_app(app)
     migrate.init_app(app, db)
     health.init_app(app, "/health")
     envdump.init_app(app, "/environment")
 
     # Add the API resources
     app.register_blueprint(user_api.blueprint)
-    app.register_blueprint(registry_api.blueprint)
+    # app.register_blueprint(registry_api.blueprint)
     app.register_blueprint(sitemap.blueprint)
 
     # Add error handlers
@@ -72,7 +71,7 @@ def create_app(config=None):
 
     # Add a testing command
     @app.cli.command('test')
-    def test_app():
+    def test_app():  # pylint: disable=W0612
         pytest.main(['-s', 'tests'])
 
     # Return the configured app

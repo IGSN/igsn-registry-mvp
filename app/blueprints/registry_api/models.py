@@ -5,6 +5,8 @@
 """
 
 import pendulum
+from sqlalchemy import Column, Table, Integer, DateTime, Boolean, Unicode, ForeignKey
+from sqlalchemy.orm import relationship
 
 from ...extensions.sqlalchemy import db
 
@@ -16,13 +18,18 @@ class Agent(db.Model):
 
     __tablename__ = "agent"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    technical_contact = db.relationship('User')
-    primary_contact = db.relationship('User')
-    public_id = db.Column(db.String(255), unique=True, nullable=False)
-    namespaces = db.relationship('Namespace', backref=db.backref('owner'))
-    sitemaps = db.relationship('Sitemap', backref=db.backref('owner'))
-    registered_on = db.Column(db.DateTime, default=pendulum.now())
+    # Attributes
+    id = Column(Integer, primary_key=True)
+    technical_contact_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+    primary_contact_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+    public_id = Column(Unicode(255), unique=True, nullable=False)
+    registered_on = Column(DateTime, default=pendulum.now())
+
+    # Relationships
+    technical_contact = relationship('User', foreign_keys='Agent.technical_contact_id', uselist=False)
+    primary_contact = relationship('User', foreign_keys='Agent.primary_contact_id', uselist=False)
+    namespaces = relationship('Namespace', back_populates='owner')
+    sitemaps = relationship('Sitemap', back_populates='owner')
 
     def __repr__(self):
         return f"<IGSN Agent '{self.public_id}'>"
@@ -35,10 +42,17 @@ class Namespace(db.Model):
 
     __tablename__ = "namespace"
 
-    id = db.Column(db.Integer, primary_key=True)
-    prefix = db.Column(db.String(255), unique=True, nullable=False)
-    owner = db.relationship('Agent', backref=db.backref('namespaces'))
-    in_sitemap = db.relationship('Sitemap', backref=db.backref('namespaces'))
+    # Attributes
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    prefix = Column(Unicode(255), unique=True, nullable=False)
+    owner_id = Column(Integer, ForeignKey('agent.id'))
+    sitemap_id = Column(Integer, ForeignKey('sitemap.id'))
+
+    # Relationships
+    owner = relationship('Agent', foreign_keys='Namespace.owner_id', 
+                         back_populates='namespaces', uselist=False)
+    sitemap = relationship('Sitemap', foreign_keys='Namespace.sitemap_id', 
+                           back_populates='namespaces', uselist=False)
 
     def __repr__(self):
         return f"<Namespace 'igsn.org/{self.prefix}'>"
@@ -48,13 +62,17 @@ class Sitemap(db.Model):
     """
     Sitemap representation
     """
+    
+    # Attributes
+    id = Column(Integer, primary_key=True)
+    url = Column(Unicode(1023), nullable=False)
+    owner_id = Column(Integer, ForeignKey('agent.id'), primary_key=True)
+    registered_on = Column(DateTime, default=pendulum.now)
+    last_confirmed_on = Column(DateTime, nullable=True)
 
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.Unicode(1023), nullable=False)
-    owner = db.relationship('Agent', backref=db.backref('sitemaps'))
-    namespaces = db.relationship("Namespace")
-    registered_on = db.Column(db.DateTime, default=pendulum.now)
-    last_confirmed_on = db.Column(db.DateTime, nullable=True)
+    # Relationships
+    owner = relationship('Agent', back_populates='sitemaps')
+    namespaces = relationship("Namespace", back_populates='sitemap')
 
     def __repr__(self):
         return f"<Sitemap '{self.url}'>"

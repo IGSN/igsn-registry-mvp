@@ -7,9 +7,12 @@
 
 import pytest
 import factory
+from faker import Faker
 from factory.alchemy import SQLAlchemyModelFactory as Factory
 
 from app.blueprints.user_api import models
+
+fake = Faker()
 
 class RoleFactory(Factory):
     class Meta:
@@ -25,10 +28,9 @@ class AdminFactory(Factory):
 
     admin = True
     email = 'admin@igsn.org'
-    password = 'sup3rs3cr3t'
     public_id = 'Adam McAdminface'
     registered_on = factory.Faker('date_time_between', start_date="-30y", end_date="now")
-    username='admin'
+    name='admin'
 
 class UserFactory(Factory):
     class Meta:
@@ -36,10 +38,12 @@ class UserFactory(Factory):
 
     admin = False
     email = factory.LazyAttribute(lambda a: a.public_id.lower().replace(' ', '.') + '@example.com')
-    password = 'sup3rs3cr3t'
-    public_id = factory.Faker('name')
+    public_id = factory.LazyAttribute(
+        lambda a: '{} {}'.format(fake.first_name(), 
+                                 fake.last_name())
+    )
     registered_on = factory.Faker('date_time_between', start_date="-30y", end_date="now")
-    username=factory.LazyAttribute(lambda a: a.public_id.lower().replace(' ', '_'))
+    name=factory.LazyAttribute(lambda a: a.public_id.lower().replace(' ', '_'))
 
 # Construct some accounts for testing
 @pytest.fixture(scope='session')
@@ -60,7 +64,6 @@ def test_add_users(users):
     "Check we have created the users ok"
     for user in users:
         assert user.id is not None
-        assert user.check_password('sup3rs3cr3t')
         with pytest.raises(AttributeError):
             user.password
 
@@ -68,7 +71,6 @@ def test_add_admin(users):
     "Check we've added the admin account"
     admin = users[0]
     assert admin.id is not None
-    assert admin.check_password('sup3rs3cr3t')
 
 def test_users_list(client, users):
     "Check that we can hit the users endpoint"
@@ -90,13 +92,13 @@ def test_users_detail(client, users):
         data = response.json['data']
         assert data['type'] == 'user'
         assert data['links']['self'] == f'/users/{user.id}'
-        expected = {'username': user.username, 'email': user.email}
+        expected = {'name': user.name, 'email': user.email}
         for key, expected_value in expected.items():
             assert data['attributes'][key] == expected_value
 
 def test_users_simple_filter(client, users):
     "Check the user detail view by id"
     for user in users:
-        response = client.get(f'/users?filter[username]={user.username}')
+        response = client.get(f'/users?filter[name]={user.name}')
         assert response.status_code == 200
         assert response.json['data'][0]['links']['self'] == f'/users/{user.id}'
