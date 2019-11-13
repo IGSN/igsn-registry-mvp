@@ -62,7 +62,7 @@ def create_app(config=None):
 
     # Add the API resources
     app.register_blueprint(user_api.blueprint)
-    app.register_blueprint(registry_api.blueprint)
+    # app.register_blueprint(registry_api.blueprint)
     app.register_blueprint(sitemap.blueprint)
 
     # Add error handlers
